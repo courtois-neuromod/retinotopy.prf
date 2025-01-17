@@ -59,12 +59,12 @@ for i = str2num(first_chunk):str2num(last_chunk)
     out_path = strcat(data_dir,'/sub-',sub_num,'/prf/output/chunks');
     out_file = strcat(out_path,'/sub-',sub_num,'_task-retinotopy_space-T1w_model-analyzePRF');
     save(strcat(out_file,'_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'results')
-    save(strcat(out_file,'_stats-ang_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'ang')
-    save(strcat(out_file,'_stats-ecc_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'ecc')
-    save(strcat(out_file,'_stats-expt_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'expt')
-    save(strcat(out_file,'_stats-rfsize_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'rfsize')
-    save(strcat(out_file,'_stats-R2_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'R2')
-    save(strcat(out_file,'_stats-gain_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'gain')
+    save(strcat(out_file,'_stat-ang_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'ang')
+    save(strcat(out_file,'_stat-ecc_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'ecc')
+    save(strcat(out_file,'_stat-expt_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'expt')
+    save(strcat(out_file,'_stat-rfsize_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'rfsize')
+    save(strcat(out_file,'_stat-R2_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'R2')
+    save(strcat(out_file,'_stat-gain_desc-chunk',num2str(i,'%04d'),'_statseries.mat'), 'gain')
 
     clear results, clear data
     clear ang, clear ecc, clear expt, clear rfsize, clear R2, clear gain

@@ -88,13 +88,13 @@ def resample_npythy(
     for param in ['angle', 'eccen', 'sigma']:
         res_img = resample_to_img(
             f"{out_path}/sub-{sub}_task-retinotopy_space-T1w_res-anat"
-            f"_model-npythy_stats-{param}_statseries.nii.gz",
+            f"_model-npythy_stat-{param}_statmap.nii.gz",
             ref_img,
             interpolation='linear',
         )
         res_img.to_filename(
             f"{out_path}/sub-{sub}_task-retinotopy_space-T1w_res-func"
-            f"_model-npythy_stats-{param}_statseries.nii.gz",
+            f"_model-npythy_stat-{param}_statmap.nii.gz",
         )
     res_img = resample_to_img(
         f"{out_path}/sub-{sub}_task-retinotopy_space-T1w_res-anat_model-npythy"

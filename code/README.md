@@ -88,7 +88,7 @@ Alliance Canada (36h job per subject, 36 CPUs per task, 5000M memory/CPU). Both 
 - ``sub-{sub_num}_task-retinotopy_condition-{task}_space-T1w_desc-chunk{chunk_num}_bold.mat``, the chunks of normalized bold data averaged across runs generated in Step 2.
 
 **Output**:
-- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_stats-{stat}_desc-chunk{chunk_num}_statseries.mat``, population receptive field metrics (``ang``, ``ecc``, ``expt``, ``rfsize``, ``R2`` and ``gain``) estimated for each voxel, saved per chunk.
+- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_stat-{stat}_desc-chunk{chunk_num}_statseries.mat``, population receptive field metrics (``ang``, ``ecc``, ``expt``, ``rfsize``, ``R2`` and ``gain``) estimated for each voxel, saved per chunk.
 
 ------------
 ## Step 4. Reconstruct analyzePRF chunked output into brain volumes and adapt metrics for Neuropythy
@@ -107,11 +107,11 @@ python retino_reassamble_voxels.py --data_dir="${DATADIR}" --sub="01"
 ```
 
 **Input**:
-- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_stats-{stat}_desc-chunk{chunk_num}_statseries.mat``, chunks of retinotopy (population receptive fields) metrics generated in Step 3 (saved as 1D arrays in .mat file)
+- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_stat-{stat}_desc-chunk{chunk_num}_statseries.mat``, chunks of retinotopy (population receptive fields) metrics generated in Step 3 (saved as 1D arrays in .mat file)
 - ``sub-{sub_num}_task-retinotopy_space-T1w_label-brain_desc-unionNonNaN_mask.nii``, the functional brain mask generated in Step 2.
 **Output**:
-- ``sub-{sub}_task-retinotopy_space-T1w_model-analyzepRF_label-brain_stats-{stat}_statseries.nii.gz``, analyzePRF metrics reassambled into brain volumes (T1w space)
-- ``sub-{sub}_task-retinotopy_space-T1w_model-analyzepRF_label-brain_stats-{stat}_desc-npythy_statseries.nii.gz``, analyzePRF metrics processed to be compatible with the Neuropythy toolbox and exported as brain volumes (T1w space)
+- ``sub-{sub}_task-retinotopy_space-T1w_model-analyzepRF_label-brain_stat-{stat}_statmap.nii.gz``, analyzePRF metrics reassambled into brain volumes (T1w space)
+- ``sub-{sub}_task-retinotopy_space-T1w_model-analyzepRF_label-brain_stat-{stat}_desc-npythy_statmap.nii.gz``, analyzePRF metrics processed to be compatible with the Neuropythy toolbox and exported as brain volumes (T1w space)
 
 ------------
 ## Step 5. Convert retinotopy outputs from brain volumes to surfaces
@@ -134,7 +134,7 @@ SURFDIR="${DATADIR}/retinotopy/prf/sub-${SUB_NUM}/npythy/input"
 
 for RES_TYPE in ang ecc x y R2 rfsize
 do
-  VOLFILE="${VOLDIR}/sub-${SUB_NUM}_task-retinotopy_space-T1w_model-analyzePRF_label-brain_stats-${RES_TYPE}_desc-npythy_statseries.nii.gz"
+  VOLFILE="${VOLDIR}/sub-${SUB_NUM}_task-retinotopy_space-T1w_model-analyzePRF_label-brain_stat-${RES_TYPE}_desc-npythy_statmap.nii.gz"
   L_OUTFILE="${SURFDIR}/lh.s${SUB_NUM}_prf_${RES_TYPE}.mgz"
   R_OUTFILE="${SURFDIR}/rh.s${SUB_NUM}_prf_${RES_TYPE}.mgz"
 
@@ -146,7 +146,7 @@ done
 
 
 **Input**:
-- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_label-brain_stats-{stat}_desc-npythy_statseries.nii.gz``, brain volumes in T1w space of analyzePRF metrics processed for Neuropythy generated in Step 4.
+- ``sub-{sub_num}_task-retinotopy_space-T1w_model-analyzePRF_label-brain_stat-{stat}_desc-npythy_statmap.nii.gz``, brain volumes in T1w space of analyzePRF metrics processed for Neuropythy generated in Step 4.
 **Output**:
 - ``s{sub_num}_prf_{ang, ecc, x, y, R2, rfsize}.mgz``, surface maps of retinotopy (pRF) output metrics (one per hemisphere per metric). e.g., ``lh.s01_prf_ang.mgz``, ``rh.s01_prf_ang.mgz``, etc.
 
@@ -229,7 +229,7 @@ INDIR="${DATADIR}/retinotopy/prf/sub-${SUB_NUM}/npythy/output"
 for PARAM in angle eccen sigma
 do
   mri_convert "${INDIR}/inferred_${PARAM}.mgz" "${INDIR}/inferred_${PARAM}_fsorient.nii.gz"
-  fslreorient2std "${INDIR}/inferred_${PARAM}_fsorient.nii.gz" "${INDIR}/sub-${SUB_NUM}_task-retinotopy_space-T1w_res-anat_model-npythy_stats-${PARAM}_statseries.nii.gz"
+  fslreorient2std "${INDIR}/inferred_${PARAM}_fsorient.nii.gz" "${INDIR}/sub-${SUB_NUM}_task-retinotopy_space-T1w_res-anat_model-npythy_stat-${PARAM}_statmap.nii.gz"
 done
 
 mri_convert "${INDIR}/inferred_varea.mgz" "${INDIR}/inferred_varea_fsorient.nii.gz"
@@ -242,7 +242,7 @@ echo "Job finished"
 **Input**:
 - ``inferred_{angle, eccen, sigma, varea}.mgz``, surface maps of retinotopy metrics adjusted from the subject's own data using a group atlas prior, and regions of interest labels inferred from those metrics with Neuropythy.
 **Output**:
-- ``inferred_{angle, eccen, sigma, varea}_fsorient.nii.gz``, ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_stats-{angle, eccen, sigma}_statseries.nii.gz`` and ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_atlas-varea_dseg.nii.gz``, retinotopy results adjusted from a group atlas prior with Neuropythy, and reconverted to brain volumes in T1w space (anatomical resolution).
+- ``inferred_{angle, eccen, sigma, varea}_fsorient.nii.gz``, ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_stat-{angle, eccen, sigma}_statmap.nii.gz`` and ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_atlas-varea_dseg.nii.gz``, retinotopy results adjusted from a group atlas prior with Neuropythy, and reconverted to brain volumes in T1w space (anatomical resolution).
 
 ------------
 ## Step 8. Downsample visual ROIs to T1w functional resolution**
@@ -257,8 +257,8 @@ python retino_resample_npythy.py --data_dir="${DATADIR}" --sub="01"
 ```
 
 **Input**:
-- ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_stats-{angle, eccen, sigma}_statseries.nii.gz`` and ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_atlas-varea_dseg.nii.gz``, T1w volumes (anatomical resolution) of retinotopy metrics adjusted from the subject's own data using a group atlas prior, and regions of interest labels inferred using Neuropythy.
+- ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_stat-{angle, eccen, sigma}_statmap.nii.gz`` and ``sub-{sub_num}_task-retinotopy_space-T1w_res-anat_model-npythy_atlas-varea_dseg.nii.gz``, T1w volumes (anatomical resolution) of retinotopy metrics adjusted from the subject's own data using a group atlas prior, and regions of interest labels inferred using Neuropythy.
 **Output**:
-- ``sub-*_task-retinotopy_space-T1w_res-func_model-npythy_stats-{angle, eccen, sigma}_statseries.nii.gz``and ``sub-{sub_num}_task-retinotopy_space-T1w_res-func_model-npythy_atlas-varea_dseg.nii.gz``, volumes of Neuropythy output resampled to T1w functional (EPI) resolution.
+- ``sub-*_task-retinotopy_space-T1w_res-func_model-npythy_stat-{angle, eccen, sigma}_statmap.nii.gz``and ``sub-{sub_num}_task-retinotopy_space-T1w_res-func_model-npythy_atlas-varea_dseg.nii.gz``, volumes of Neuropythy output resampled to T1w functional (EPI) resolution.
 - ``sub-*_task-retinotopy_space-T1w_res-anat_model-npythy_label-{roi}_mask.nii.gz``, binary region-of-interest masks in T1w space (anatomical resolution) for the following ROIs: V1, V2, V3, hV4, V01, V02, L01, L02, T01, T02, V3b and V3a.
 - ``sub-*_task-retinotopy_space-T1w_res-func_model-npythy_label-{roi}_desc-nn_mask.nii.gz``, binary region-of-interest masks resampled to T1w functional (EPI) resolution for the following ROIs: V1, V2, V3, hV4, V01, V02, L01, L02, T01, T02, V3b and V3a.
