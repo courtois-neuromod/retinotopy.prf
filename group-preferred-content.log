@@ -1,1 +1,1 @@
-1764952175s conp not metadata=distribution-restrictions=* and exclude=**/sub-0[4]/** and exclude=sub-0[4]/**
+1764953241s conp not metadata=distribution-restrictions=* and exclude=**sub-0[4]** and exclude=sub-0[4]/**
